@@ -1521,14 +1521,10 @@ int32_t MX66UW1G45G_ReadID(XSPI_HandleTypeDef *Ctx, MX66UW1G45G_Interface_t Mode
   s_command.Address = 0U;
   s_command.AlternateBytesMode = HAL_XSPI_ALT_BYTES_NONE;
   s_command.DataMode = (Mode == MX66UW1G45G_SPI_MODE) ? HAL_XSPI_DATA_1_LINE : HAL_XSPI_DATA_8_LINES;
-  s_command.DataDTRMode = (Rate == MX66UW1G45G_DTR_TRANSFER)
-                              ? HAL_XSPI_DATA_DTR_ENABLE
-                              : HAL_XSPI_DATA_DTR_DISABLE;
+  s_command.DataDTRMode = HAL_XSPI_DATA_DTR_DISABLE;
   s_command.DummyCycles = (Mode == MX66UW1G45G_SPI_MODE)
                               ? 0U
-                              : ((Rate == MX66UW1G45G_DTR_TRANSFER)
-                                     ? DUMMY_CYCLES_REG_OCTAL_DTR
-                                     : DUMMY_CYCLES_REG_OCTAL);
+                              : DUMMY_CYCLES_REG_OCTAL;
   s_command.DataLength = 3U;
   s_command.DQSMode = (Rate == MX66UW1G45G_DTR_TRANSFER) ? HAL_XSPI_DQS_ENABLE : HAL_XSPI_DQS_DISABLE;
  #if defined (XSPI_CCR_SIOO)
@@ -1732,6 +1728,58 @@ int32_t MX66UW1G45G_EnterPowerDown(XSPI_HandleTypeDef *Ctx, MX66UW1G45G_Interfac
   s_command.Instruction = (Mode == MX66UW1G45G_SPI_MODE)
                               ? MX66UW1G45G_ENTER_DEEP_POWER_DOWN_CMD
                               : MX66UW1G45G_OCTA_ENTER_DEEP_POWER_DOWN_CMD;
+  s_command.AddressMode = HAL_XSPI_ADDRESS_NONE;
+  s_command.AlternateBytesMode = HAL_XSPI_ALT_BYTES_NONE;
+  s_command.DataMode = HAL_XSPI_DATA_NONE;
+  s_command.DummyCycles = 0U;
+  s_command.DQSMode = HAL_XSPI_DQS_DISABLE;
+ #if defined (XSPI_CCR_SIOO)
+  s_command.SIOOMode            = HAL_XSPI_SIOO_INST_EVERY_CMD;
+ #endif
+
+  /* Send the command */
+  if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    return MX66UW1G45G_ERROR;
+  }
+
+  return MX66UW1G45G_OK;
+}
+
+/**
+  * @brief  Flash release deep power-down command
+  *         SPI/OPI
+  * @param  Ctx Component object pointer
+  * @param  Mode Interface select
+  * @param  Rate Transfer rate STR or DTR
+  * @retval error status
+  */
+int32_t MX66UW1G45G_ReleasePowerDown(XSPI_HandleTypeDef *Ctx, MX66UW1G45G_Interface_t Mode,
+                                     MX66UW1G45G_Transfer_t Rate)
+{
+  XSPI_RegularCmdTypeDef s_command = {0};
+
+  /* SPI mode and DTR transfer not supported by memory */
+  if ((Mode == MX66UW1G45G_SPI_MODE) && (Rate == MX66UW1G45G_DTR_TRANSFER))
+  {
+    return MX66UW1G45G_ERROR;
+  }
+
+  /* Initialize the enter power down command */
+  s_command.OperationType = HAL_XSPI_OPTYPE_COMMON_CFG;
+
+  s_command.InstructionMode = (Mode == MX66UW1G45G_SPI_MODE)
+                                  ? HAL_XSPI_INSTRUCTION_1_LINE
+                                  : HAL_XSPI_INSTRUCTION_8_LINES;
+  s_command.InstructionDTRMode = (Rate == MX66UW1G45G_DTR_TRANSFER)
+                                     ? HAL_XSPI_INSTRUCTION_DTR_ENABLE
+                                     : HAL_XSPI_INSTRUCTION_DTR_DISABLE;
+  s_command.InstructionWidth = (Mode == MX66UW1G45G_SPI_MODE)
+                                   ? HAL_XSPI_INSTRUCTION_8_BITS
+                                   : HAL_XSPI_INSTRUCTION_16_BITS;
+  s_command.Instruction = (Mode == MX66UW1G45G_SPI_MODE)
+                              ? MX66UW1G45G_RELEASE_DEEP_POWER_DOWN_CMD
+                              : MX66UW1G45G_OCTA_RELEASE_DEEP_POWER_DOWN_CMD;
   s_command.AddressMode = HAL_XSPI_ADDRESS_NONE;
   s_command.AlternateBytesMode = HAL_XSPI_ALT_BYTES_NONE;
   s_command.DataMode = HAL_XSPI_DATA_NONE;

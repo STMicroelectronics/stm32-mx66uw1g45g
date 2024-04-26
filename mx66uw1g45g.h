@@ -107,6 +107,7 @@ extern "C" {
 #define MX66UW1G45G_PROG_ERASE_SUSPEND_CMD               0xB0U   /*!< Program/Erase suspend                                 */
 #define MX66UW1G45G_PROG_ERASE_RESUME_CMD                0x30U   /*!< Program/Erase resume                                  */
 #define MX66UW1G45G_ENTER_DEEP_POWER_DOWN_CMD            0xB9U   /*!< Enter deep power down                                 */
+#define MX66UW1G45G_RELEASE_DEEP_POWER_DOWN_CMD          0xABU   /*!< Release from deep power down                          */
 #define MX66UW1G45G_SET_BURST_LENGTH_CMD                 0xC0U   /*!< Set burst length                                      */
 #define MX66UW1G45G_ENTER_SECURED_OTP_CMD                0xB1U   /*!< Enter secured OTP)                                    */
 #define MX66UW1G45G_EXIT_SECURED_OTP_CMD                 0xC1U   /*!< Exit secured OTP)                                     */
@@ -163,6 +164,7 @@ extern "C" {
 #define MX66UW1G45G_OCTA_PROG_ERASE_SUSPEND_CMD               0xB04FU   /*!< Octa Program/Erase suspend                      */
 #define MX66UW1G45G_OCTA_PROG_ERASE_RESUME_CMD                0x30CFU   /*!< Octa Program/Erase resume                       */
 #define MX66UW1G45G_OCTA_ENTER_DEEP_POWER_DOWN_CMD            0xB946U   /*!< Octa Enter deep power down                      */
+#define MX66UW1G45G_OCTA_RELEASE_DEEP_POWER_DOWN_CMD          0xAB54U   /*!< Octa Release from deep power down               */
 #define MX66UW1G45G_OCTA_SET_BURST_LENGTH_CMD                 0xC03FU   /*!< Octa Set burst length                           */
 #define MX66UW1G45G_OCTA_ENTER_SECURED_OTP_CMD                0xB14EU   /*!< Octa Enter secured OTP)                         */
 #define MX66UW1G45G_OCTA_EXIT_SECURED_OTP_CMD                 0xC13EU   /*!< Octa Exit secured OTP)                          */
@@ -248,7 +250,7 @@ extern "C" {
 #define MX66UW1G45G_SECR_P_FAIL                          0x20U        /*!< Program fail flag                                  */
 #define MX66UW1G45G_SECR_E_FAIL                          0x40U        /*!< Erase fail flag                                    */
 #define MX66UW1G45G_SECR_WPSEL                           0x80U        /*!< Write protection selection                         */
-  
+
 #define XSPI_ALTERNATE_BYTE_PATTERN                      0x00U
 
 /**
@@ -356,6 +358,8 @@ int32_t MX66UW1G45G_ResetMemory(XSPI_HandleTypeDef *Ctx, MX66UW1G45G_Interface_t
 int32_t MX66UW1G45G_NoOperation(XSPI_HandleTypeDef *Ctx, MX66UW1G45G_Interface_t Mode, MX66UW1G45G_Transfer_t Rate);
 int32_t MX66UW1G45G_EnterPowerDown(XSPI_HandleTypeDef *Ctx, MX66UW1G45G_Interface_t Mode,
                                     MX66UW1G45G_Transfer_t Rate);
+int32_t MX66UW1G45G_ReleasePowerDown(XSPI_HandleTypeDef *Ctx, MX66UW1G45G_Interface_t Mode,
+                                     MX66UW1G45G_Transfer_t Rate);
 
 /**
   * @}
